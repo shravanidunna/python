@@ -1,0 +1,255 @@
+1. Data handling and pre-processing with Python
+2. Exploratory Data Analysis with Python 
+3. Data visualization with Python 
+
+Visualizing statistical relationships
+Visualizing distributions of data 
+Visualizing categorical data
+-----------------------------------------
+
+1. Open command prompt
+2. Check python Version : 
+	
+	python --version
+	
+3. Install libraries
+
+	pip install numpy
+	pip install pandas
+	pip install matplotlib
+	pip install seaborn 
+	pip install xlrd
+	pip install openpyxl
+	pip install pivottablejs
+	pip install ipypivot
+	
+4. Launch Jupyter Notebook
+
+	jupyter notebook
+	
+5. Navigate to the directory where the data files are present,Open a new Kernel
+
+7. Import the dataset : 
+
+	import numpy as np
+	import pandas as pd
+	import matplotlib as plt
+	import seaborn as sns
+	import warnings
+	warnings.filterwarnings("ignore")
+
+
+	
+8. EDA with Movie dataset 
+
+	import numpy as np
+	import pandas as pd
+	import matplotlib.pyplot as plt
+	import seaborn as sns
+
+	import warnings
+	warnings.filterwarnings("ignore")
+
+	#Read a CSV file
+	movies =pd.read_csv("C:\\Users\\jaydeepb751\\Documents\\PwC\\CERTIFICATION & TRAINING\\Training 23-24\\EDA-Python\Movie-Ratings.csv")
+		
+	#Schema Structure 
+	movies.info()
+	movies.head()
+	
+	#Data Manipulation
+	movies.columns = ['Film','Genre','CR','AR','Budget($M)','Year']
+	movies.info()
+	movies.describe()
+	movies['Year'] = movies['Year'].astype(str)
+	
+	#Data Sorting
+	movies.sort_values(by=['Budget($M)','AR'],ascending=False) 	
+	
+	#Grouping
+	movies['Genre'].value_counts()
+	movies.groupby(['Genre'])['AR'].median()
+	movies.groupby(['Genre'])['AR'].median().sort_values(ascending=False)
+	
+	#Multiple Grouping and Sorting
+	movies.groupby(['Genre']).aggregate({'CR':'mean','AR':'median','Budget($M)':'sum'})
+	movies.groupby(['Genre']).aggregate({'CR':'mean','AR':'median','Budget($M)':'sum'}).sort_values(by=['Budget($M)'],ascending=False)
+	
+
+	# creating the bar plot - Visual grouping and Sorting
+	
+	movies=movies.sort_values(by=['Budget($M)'],ascending=False)
+	sns.barplot(x='Genre', y='Budget($M)', data=movies)
+	
+	# creating the bar plot
+	plt.bar(movies['Genre'], movies['Budget($M)'], color ='maroon', width = 0.6)
+	plt.xlabel("Genre")
+	plt.ylabel("Budget in Millions")
+	plt.title("Genre Vs $")
+	plt.show()
+		
+
+	movies.corr(method = 'pearson' , min_periods = 1, numeric_only = True)
+	sns.pairplot(movies)
+	
+	ax = sns.swarmplot(x='Genre',y='Budget($M)', data = movies, hue = 'Genre')
+	sns.boxplot(x='Genre',y='Budget($M)', data = movies, ax=ax)
+
+	from pivottablejs import pivot_ui
+	pivot_ui(movies)
+
+
+9. EDA with Demographics dataset 
+
+
+#Read a CSV file
+
+Try to analyze the relationsip between the birth rate and internet access
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+	
+df =pd.read_csv('DemographicData.csv')
+df.info()
+df.head()
+df.columns = ['Country Name','Country Code','BR','IA','IG','BRC']
+df.tail()
+df.groupby(['BRC','IG']).aggregate({'BR':'mean','IA':'mean'}).sort_values(by=['BR'],ascending=False)
+df.corr(method = 'pearson' , min_periods = 1, numeric_only = True)
+sns.pairplot(df)
+
+ax = sns.swarmplot(x='IG',y='IA', data = df, hue = 'BRC')
+sns.boxplot(x='IG',y='IA', data = df, ax=ax)
+
+ax = sns.swarmplot(x='IG',y='BR', data = df, hue = 'BRC')
+sns.boxplot(x='IG',y='BR', data = df, ax=ax)
+
+ax = sns.swarmplot(x='IG',y='IA', data = df, hue = 'BRC')
+sns.boxplot(x='IG',y='BR', data = df, ax=ax)
+
+
+9. EDA with EPL dataset 
+
+Count and Capacity analysis based on region 
+
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+epl = pd.read_excel('EPL Data.xlsx', sheet_name=1)
+epl.head()
+epl['Region'].value_counts()
+epl[epl['Region']=="London"]
+epl.describe()
+df.groupby(['Region']).aggregate({'Capacity':'sum'}).sort_values(by=['Capacity'],ascending=False)
+
+epl['Region'] = epl['Region'].fillna('Default')
+epl.groupby(['Region']).aggregate({'Capacity':['sum','min','max']})
+
+epl=epl.sort_values(by=['Capacity'], ascending=False)
+
+ax = sns.swarmplot(x='Region',y='Capacity', data = epl)
+
+
+10. Data Visualization : Visualizing statistical relationships
+
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+import warnings
+warnings.filterwarnings("ignore")
+
+movies = pd.read_csv('Movie-Ratings.csv')
+df = pd.read_csv('DemographicData.csv')
+epl = pd.read_excel('EPL Data.xlsx', sheet_name=1)
+
+
+movies.columns = ['Film','Genre','CR','AR','Budget($M)','Year']
+movies.head()
+
+df.columns = ['Country Name','Country Code','BR','IA','IG','BRC']
+df.head()
+
+epl['Region'] = epl['Region'].fillna('Default')
+epl.head()
+
+#Relational Plots - Simple Scatter plot
+sns.relplot(x = 'CR', y = 'AR', data=movies, kind='scatter')
+
+sns.set_theme(style="darkgrid")
+sns.relplot(x = 'BR', y = 'IA', data=df, kind='scatter',hue='IG')
+
+
+sns.relplot(data=df,
+            x = 'BR',
+            y = 'IA', 
+            kind='scatter',
+            hue='IG',
+            style='BRC',
+            size='IA')
+
+#Relational Plot : Line
+
+sns.relplot(data=movies,
+            kind='line',
+            x = 'Year',
+            y = 'Budget($M)')
+			
+			
+sns.relplot(data=movies,kind='line',
+            x = 'Year', y = 'Budget($M)',
+            errorbar=None,
+            hue='Genre',
+            style='Genre',
+            markers=True,
+            dashes=False)
+
+			
+11. Data Visualization : Visualizing distributions of data 
+
+
+#Distribution Plots - 
+
+
+I. Column Chart / Stacked column / Clustered Column / Histogram / Small Multiple Units / 
+
+	sns.displot(movies, x='Year')
+	sns.displot(movies, x='Year', hue='Genre',multiple='stack')
+	sns.displot(movies, x='Year', hue='Genre',multiple='dodge')
+	sns.displot(movies, x='AR')
+	sns.displot(movies, x='Genre',col='Year')
+	sns.displot(movies, x='Year', hue='Genre',multiple='stack',kind='kde')
+	sns.displot(movies, x='Year', hue='Genre',fill=True,kind='kde')
+
+
+II. Joint Plots - relation + Distribution 
+
+	# joint plot for CriticsRatings Vs AudienceRatings
+	sns.jointplot(data=movies, x='CR',y='AR',color='Red')
+	
+	sns.jointplot(data=movies, x='CR',y='AR',color='blue',kind="hex")
+	
+	sns.jointplot(data=movies, x='CR',y='AR',color='Blue',kind="kde")
+	
+	sns.pairplot(df,height=3)
+
+12. Data Visualization : Visualizing categorical data
+
+	#Categorical Plots - strip plot / swarm / box / violin
+	
+	sns.catplot(data=df, x="BRC", y="IA", kind="strip",hue="IG")
+	sns.catplot(data=df, x="BRC", y="IA", kind="swarm", hue="IG")
+	sns.catplot(data=df, x="BRC", y="IA", kind="box")
+	sns.catplot(data=df, x="BRC", y="IA", kind="violin")
+	
+	ax = sns.swarmplot(x="BRC", y="IA", data=df,hue="IG", zorder=0)
+	sns.boxplot(x="BRC", y="IA", data=df, ax=ax)
+	plt.show()
+
